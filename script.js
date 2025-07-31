@@ -1,7 +1,7 @@
-// bytesXc simple noisy encoder/decoder
-// Each char encoded as 10 chars: first 2 hex chars encode char code, rest 8 random noise chars
+// bytesXc super-heavy noisy encoder/decoder
+// Each char encoded as 100 chars: first 2 hex chars encode char code, rest 98 random noise chars
 
-const chunkLength = 10;
+const chunkLength = 100;
 const noiseLength = chunkLength - 2;
 const charset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=';
 
