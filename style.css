@@ -1,0 +1,87 @@
+/* Base resets */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #0a001f; /* very dark purple/black */
+  color: white;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  display: flex;
+  justify-content: center;
+  padding: 2rem;
+  min-height: 100vh;
+}
+
+.container {
+  max-width: 700px;
+  width: 100%;
+  background: #1a0033; /* dark purple */
+  border: 2px solid #800080; /* purple border */
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 0 15px #800080a0;
+}
+
+h1 {
+  text-align: center;
+  color: #d10000; /* bright red */
+  margin-bottom: 2rem;
+  text-shadow: 0 0 8px #d10000;
+}
+
+h2 {
+  color: #b381d7;
+  margin-bottom: 0.5rem;
+  border-bottom: 1px solid #b381d7;
+  padding-bottom: 0.3rem;
+}
+
+.section {
+  margin-bottom: 2.5rem;
+}
+
+textarea {
+  width: 100%;
+  height: 120px;
+  background: #200040; /* dark purple */
+  border: 1.5px solid #800080;
+  border-radius: 8px;
+  color: white;
+  font-size: 1.1rem;
+  padding: 0.75rem;
+  resize: vertical;
+  font-family: monospace;
+  transition: border-color 0.3s ease;
+}
+
+textarea:focus {
+  border-color: #d10000;
+  outline: none;
+  box-shadow: 0 0 5px #d10000;
+}
+
+button {
+  display: block;
+  margin: 1rem 0;
+  background: #800080;
+  color: white;
+  border: none;
+  padding: 0.7rem 1.5rem;
+  font-size: 1.1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.25s ease;
+}
+
+button:hover {
+  background: #d10000;
+  box-shadow: 0 0 10px #d10000;
+}
+
+textarea[readonly] {
+  background: #120022;
+  border-color: #550055;
+  color: #d1a3ff;
+}
