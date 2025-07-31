@@ -1,4 +1,4 @@
-// bytesXc Encoder/Decoder with fade animation on output
+// bytesXc Encoder/Decoder with fade animation and copy buttons
 
 const prefix = "bx";
 
@@ -73,4 +73,26 @@ decodeBtn.addEventListener('click', () => {
   const decoded = decodeText(encodedText);
   decodeOutput.value = decoded;
   animateOutput(decodeOutput);
+});
+
+// Copy button logic
+const copyButtons = document.querySelectorAll('.copyBtn');
+
+copyButtons.forEach(btn => {
+  btn.addEventListener('click', () => {
+    const targetId = btn.getAttribute('data-target');
+    const targetTextarea = document.getElementById(targetId);
+    if (!targetTextarea) return;
+
+    if (!targetTextarea.value) return;
+
+    navigator.clipboard.writeText(targetTextarea.value).then(() => {
+      btn.classList.add('copied');
+      setTimeout(() => {
+        btn.classList.remove('copied');
+      }, 1500);
+    }).catch(() => {
+      alert("Failed to copy!");
+    });
+  });
 });
