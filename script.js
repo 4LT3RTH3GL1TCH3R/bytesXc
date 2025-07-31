@@ -1,20 +1,11 @@
-// bytesXc Encoder/Decoder
-
-// We will encode each character as:
-// prefix 'bx' + 4 characters representing char code in base36 uppercase (0-9, A-Z)
-
-// Example:
-// 'A' (char code 65) -> "bx001T" ('001T' is base36 for 65)
-
-// Decode reverses this exactly.
+// bytesXc Encoder/Decoder with fade animation on output
 
 const prefix = "bx";
 
 function encodeChar(char) {
   const code = char.charCodeAt(0);
-  // base36 uppercase padded to length 4
   let base36 = code.toString(36).toUpperCase();
-  base36 = base36.padStart(4, '0'); 
+  base36 = base36.padStart(4, '0');
   return prefix + base36;
 }
 
@@ -36,7 +27,7 @@ function encodeText(text) {
 
 function decodeText(encoded) {
   let decoded = "";
-  const chunkLength = prefix.length + 4; // 6 chars per encoded char
+  const chunkLength = prefix.length + 4;
   for (let i = 0; i < encoded.length; i += chunkLength) {
     const chunk = encoded.slice(i, i + chunkLength);
     decoded += decodeChunk(chunk);
@@ -52,11 +43,20 @@ const decodeOutput = document.getElementById('decodeOutput');
 const encodeBtn = document.getElementById('encodeBtn');
 const decodeBtn = document.getElementById('decodeBtn');
 
+function animateOutput(elem) {
+  elem.style.opacity = '0';
+  setTimeout(() => {
+    elem.style.opacity = '0.95';
+  }, 20);
+}
+
 encodeBtn.addEventListener('click', () => {
   const inputText = encodeInput.value;
   const encoded = encodeText(inputText);
   encodeOutput.value = encoded;
-  decodeInput.value = encoded;  // pre-fill decode input for convenience
+  animateOutput(encodeOutput);
+
+  decodeInput.value = encoded;
   decodeOutput.value = '';
 });
 
@@ -66,11 +66,11 @@ decodeBtn.addEventListener('click', () => {
     decodeOutput.value = '';
     return;
   }
-  // Check length correctness
   if (encodedText.length % 6 !== 0) {
     decodeOutput.value = "Invalid encoded string length!";
     return;
   }
   const decoded = decodeText(encodedText);
   decodeOutput.value = decoded;
+  animateOutput(decodeOutput);
 });
