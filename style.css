@@ -1,53 +1,53 @@
-body {
-  margin: 0;
-  font-family: monospace;
-  background-color: #0a0a0a;
+/* Add below existing CSS */
+
+.output-wrapper {
+  position: relative;
+}
+
+.copyBtn {
+  position: absolute;
+  top: -35px;
+  right: 0;
+  background: #800080;
   color: white;
-  display: flex;
-}
-
-#sidebar {
-  background-color: #111;
-  width: 200px;
-  padding: 15px;
-  border-right: 2px solid purple;
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 100vh;
-  display: block;
-  transition: transform 0.3s ease;
-}
-
-#main {
-  margin-left: 200px;
-  padding: 20px;
-  flex: 1;
-}
-
-textarea {
-  width: 100%;
-  height: 120px;
-  margin: 10px 0;
-  background: #1e1e2f;
-  color: #ff6188;
-  border: 1px solid #ff79c6;
-  resize: vertical;
-}
-
-button {
-  background: #5a189a;
   border: none;
-  color: white;
-  padding: 10px 16px;
-  margin: 5px 0;
+  padding: 0.3rem 0.8rem;
+  font-size: 0.9rem;
+  border-radius: 6px;
   cursor: pointer;
-  transition: 0.2s;
-}
-button:hover {
-  background: #7b2cbf;
+  transition: background-color 0.25s ease, box-shadow 0.3s ease;
+  user-select: none;
+  z-index: 10;
 }
 
-.hidden {
-  display: none;
+.copyBtn:hover {
+  background: #d10000;
+  box-shadow: 0 0 10px #d10000;
+}
+
+.copyBtn:active {
+  background: #a00000;
+  box-shadow: 0 0 6px #a00000;
+  transform: scale(0.95);
+}
+
+.copyBtn.copied {
+  background: #4caf50 !important;
+  box-shadow: 0 0 12px #4caf50 !important;
+}
+
+.copyBtn.copied::after {
+  content: "Copied!";
+  position: absolute;
+  top: -26px;
+  right: 50%;
+  transform: translateX(50%);
+  background: #4caf50;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  white-space: nowrap;
+  opacity: 0.9;
+  pointer-events: none;
+  user-select: none;
 }
