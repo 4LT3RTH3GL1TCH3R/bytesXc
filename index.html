@@ -1,33 +1,36 @@
-<!-- index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>bytesXc Encoder/Decoder</title>
-  <link rel="stylesheet" href="style.css" />
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>bytesXc Encoder/Decoder</title>
+<link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div id="sidebar">
-    <button onclick="switchTool('main')">Encoder/Decoder</button>
-    <button onclick="switchTool('pyobfuscator')">Python Obfuscator</button>
-  </div>
-
-  <div id="mainTool">
+  <div class="container">
     <h1>bytesXc Encoder / Decoder</h1>
-    <textarea id="inputText" placeholder="Enter text..."></textarea>
-    <button onclick="encodeText()">Encode</button>
-    <button onclick="decodeText()">Decode</button>
-    <textarea id="outputText" placeholder="Output..."></textarea>
-    <button onclick="copyOutput()">Copy Output</button>
-  </div>
 
-  <div id="pyobfuscatorTool" style="display:none">
-    <h1>Python Obfuscator (bytesXc)</h1>
-    <textarea id="pyInput" placeholder="Paste your Python code..."></textarea>
-    <button onclick="obfuscatePython()">Obfuscate</button>
-    <textarea id="pyOutput" placeholder="Runner file output..."></textarea>
-    <button onclick="copyPythonOutput()">Copy Output</button>
+    <div class="section">
+      <h2>Encode Text</h2>
+      <textarea id="encodeInput" placeholder="Enter text to encode..."></textarea>
+      <button id="encodeBtn">Encode →</button>
+
+      <div class="output-wrapper">
+        <button class="copyBtn" data-target="encodeOutput">Copy</button>
+        <textarea id="encodeOutput" placeholder="Encoded text will appear here..." readonly></textarea>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Decode Text</h2>
+      <textarea id="decodeInput" placeholder="Enter bytesXc encoded text here..."></textarea>
+      <button id="decodeBtn">Decode →</button>
+
+      <div class="output-wrapper">
+        <button class="copyBtn" data-target="decodeOutput">Copy</button>
+        <textarea id="decodeOutput" placeholder="Decoded text will appear here..." readonly></textarea>
+      </div>
+    </div>
   </div>
 
   <script src="script.js"></script>
