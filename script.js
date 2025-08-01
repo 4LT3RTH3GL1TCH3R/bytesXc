@@ -1,87 +1,111 @@
-// bytesXc heavy noisy encoder/decoder with full UTF-16 Unicode support
-
-const chunkLength = 102; // 4 hex chars + 98 noise chars
-const noiseLength = chunkLength - 4;
-const charset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=';
-
-function getRandomChar() {
-  return charset[Math.floor(Math.random() * charset.length)];
+const ENCODE_MAP = {};
+for (let i = 0; i < 256; i++) {
+  let char = String.fromCharCode(i);
+  let enc = '';
+  for (let j = 0; j < 40; j++) {
+    enc += String.fromCharCode(33 + ((i * j + j) % 94)); // noisy mapping
+  }
+  ENCODE_MAP[char] = enc;
 }
 
-function toHex(code) {
-  return code.toString(16).padStart(4, '0'); // 4 hex digits for UTF-16 code unit
-}
-
-function fromHex(hex) {
-  return parseInt(hex, 16);
-}
-
-function encodeText(text) {
-  let encoded = '';
-  for (let i = 0; i < text.length; i++) {
-    const codeUnit = text.charCodeAt(i);
-    const codeHex = toHex(codeUnit);
-    let noise = '';
-    for (let j = 0; j < noiseLength; j++) {
-      noise += getRandomChar();
+function injectNoise(encoded) {
+  const junk = "!@#$%^&*()_+-=[]{};:,./<>?|~0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  let output = '';
+  for (let char of encoded) {
+    output += char;
+    for (let i = 0; i < 8; i++) {
+      output += junk[Math.floor(Math.random() * junk.length)];
     }
-    encoded += codeHex + noise;
   }
-  return encoded;
+  return output;
 }
 
-function decodeText(encoded) {
-  if (encoded.length % chunkLength !== 0) {
-    return 'Invalid encoded string length!';
-  }
-  const codeUnits = [];
-  for (let i = 0; i < encoded.length; i += chunkLength) {
-    const chunk = encoded.slice(i, i + chunkLength);
-    const codeHex = chunk.slice(0, 4);
-    const codeUnit = fromHex(codeHex);
-    codeUnits.push(codeUnit);
-  }
-  return String.fromCharCode(...codeUnits);
+function cleanNoise(input) {
+  return input.split('').filter((_, i) => i % 9 === 0).join('');
 }
 
-// DOM elements
-const encodeInput = document.getElementById('encodeInput');
-const encodeOutput = document.getElementById('encodeOutput');
-const decodeInput = document.getElementById('decodeInput');
-const decodeOutput = document.getElementById('decodeOutput');
-const encodeBtn = document.getElementById('encodeBtn');
-const decodeBtn = document.getElementById('decodeBtn');
-
-function animateOutput(elem) {
-  elem.style.opacity = '0';
-  setTimeout(() => {
-    elem.style.opacity = '0.95';
-  }, 20);
+function encode() {
+  let input = document.getElementById("inputText").value;
+  let encoded = "";
+  for (let c of input) {
+    encoded += ENCODE_MAP[c] || "?".repeat(40);
+  }
+  encoded = injectNoise(encoded);
+  document.getElementById("outputText").value = encoded;
 }
 
-encodeBtn.addEventListener('click', () => {
-  const inputText = encodeInput.value;
-  if (!inputText) {
-    encodeOutput.value = '';
-    decodeInput.value = '';
-    decodeOutput.value = '';
-    return;
+function decode() {
+  try {
+    let input = cleanNoise(document.getElementById("outputText").value);
+    if (input.length % 40 !== 0) throw new Error("Invalid encoded string length!");
+    let chunks = input.match(/.{1,40}/g);
+    let decoded = "";
+    for (let chunk of chunks) {
+      let match = Object.entries(ENCODE_MAP).find(([k, v]) => v === chunk);
+      decoded += match ? match[0] : "?";
+    }
+    document.getElementById("inputText").value = decoded;
+  } catch (err) {
+    alert(err.message);
   }
-  const encoded = encodeText(inputText);
-  encodeOutput.value = encoded;
-  animateOutput(encodeOutput);
+}
 
-  decodeInput.value = encoded;
-  decodeOutput.value = '';
+function copyOutput() {
+  navigator.clipboard.writeText(document.getElementById("outputText").value);
+}
+
+function copyRunner() {
+  navigator.clipboard.writeText(document.getElementById("runnerOutput").value);
+}
+
+function toggleTool(id) {
+  document.querySelectorAll(".tool").forEach(tool => tool.classList.add("hidden"));
+  document.getElementById(id).classList.remove("hidden");
+}
+
+document.addEventListener("keydown", (e) => {
+  if (e.key.toLowerCase() === "m") {
+    const sidebar = document.getElementById("sidebar");
+    const main = document.getElementById("main");
+    if (sidebar.style.transform === "translateX(-100%)") {
+      sidebar.style.transform = "translateX(0)";
+      main.style.marginLeft = "200px";
+    } else {
+      sidebar.style.transform = "translateX(-100%)";
+      main.style.marginLeft = "0";
+    }
+  }
 });
 
-decodeBtn.addEventListener('click', () => {
-  const encodedText = decodeInput.value.trim();
-  if (!encodedText) {
-    decodeOutput.value = '';
-    return;
+// Python Obfuscator
+function obfuscatePython() {
+  const script = document.getElementById("pythonInput").value;
+  let encoded = "";
+  for (let c of script) {
+    encoded += ENCODE_MAP[c] || "?".repeat(40);
   }
-  const decoded = decodeText(encodedText);
-  decodeOutput.value = decoded;
-  animateOutput(decodeOutput);
-});
+  encoded = injectNoise(encoded);
+
+  const runner = `
+import time
+import sys
+
+def clean_noise(s):
+    return ''.join([s[i] for i in range(0, len(s), 9)])
+
+def decode_bytesxc(raw):
+    ENC_MAP = {}
+    for i in range(256):
+        c = chr(i)
+        encoded = ''.join([chr(33 + ((i * j + j) % 94)) for j in range(40)])
+        ENC_MAP[encoded] = c
+    raw = clean_noise(raw)
+    chunks = [raw[i:i+40] for i in range(0, len(raw), 40)]
+    return ''.join([ENC_MAP.get(chunk, '?') for chunk in chunks])
+
+obfuscated = """${encoded}"""
+exec(decode_bytesxc(obfuscated))
+`;
+
+  document.getElementById("runnerOutput").value = runner.trim();
+}
