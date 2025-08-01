@@ -1,53 +1,81 @@
-/* Add below existing CSS */
-
-.output-wrapper {
-  position: relative;
+body {
+  margin: 0;
+  font-family: "Segoe UI", sans-serif;
+  background: #121212;
+  color: #fff;
+  display: flex;
 }
 
-.copyBtn {
-  position: absolute;
-  top: -35px;
-  right: 0;
-  background: #800080;
+.sidebar {
+  width: 200px;
+  background-color: #1e1e1e;
+  padding: 10px;
+  box-shadow: 2px 0 5px #000;
+  transition: transform 0.3s ease;
+  position: fixed;
+  height: 100vh;
+  overflow: auto;
+  z-index: 2;
+}
+
+.sidebar button {
+  width: 100%;
+  margin: 5px 0;
+  padding: 10px;
+  border: none;
+  background: #333;
+  color: white;
+  font-weight: bold;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.sidebar button:hover {
+  background: #555;
+}
+
+.container {
+  margin-left: 220px;
+  padding: 20px;
+  transition: all 0.3s ease;
+  flex: 1;
+}
+
+textarea {
+  width: 100%;
+  height: 150px;
+  border-radius: 10px;
+  padding: 10px;
+  font-size: 16px;
+  margin-bottom: 10px;
+  background: #1e1e1e;
+  color: white;
+  border: 1px solid #444;
+  resize: vertical;
+}
+
+.buttons {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+button {
+  border-radius: 10px;
+  padding: 10px 20px;
+  font-size: 16px;
+  background: #3a3aff;
   color: white;
   border: none;
-  padding: 0.3rem 0.8rem;
-  font-size: 0.9rem;
-  border-radius: 6px;
   cursor: pointer;
-  transition: background-color 0.25s ease, box-shadow 0.3s ease;
-  user-select: none;
-  z-index: 10;
+  transition: background 0.2s ease;
 }
 
-.copyBtn:hover {
-  background: #d10000;
-  box-shadow: 0 0 10px #d10000;
+button:hover {
+  background: #5a5aff;
 }
 
-.copyBtn:active {
-  background: #a00000;
-  box-shadow: 0 0 6px #a00000;
-  transform: scale(0.95);
-}
-
-.copyBtn.copied {
-  background: #4caf50 !important;
-  box-shadow: 0 0 12px #4caf50 !important;
-}
-
-.copyBtn.copied::after {
-  content: "Copied!";
-  position: absolute;
-  top: -26px;
-  right: 50%;
-  transform: translateX(50%);
-  background: #4caf50;
-  padding: 2px 8px;
-  border-radius: 4px;
-  font-size: 0.75rem;
-  white-space: nowrap;
-  opacity: 0.9;
-  pointer-events: none;
-  user-select: none;
+.hidden {
+  display: none;
 }
