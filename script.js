@@ -1,69 +1,34 @@
-const charMap = {};
-const reverseMap = {};
-const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()-=_+[]{}|;:',.<>?/`~";
-let chunkSize = 10;
+const charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*()-_=+[]{}<>!?~|';
 
-for (let i = 0; i < 256; i++) {
-  let char = String.fromCharCode(i);
-  let noise = "";
-  for (let j = 0; j < chunkSize; j++) {
-    noise += charset[Math.floor(Math.random() * charset.length)];
-  }
-  charMap[char] = noise;
-  reverseMap[noise] = char;
-}
-
+// Encodes each char with a 3-part randomized symbol wrap + unicode value
 function encode() {
-  let input = document.getElementById("input").value;
-  let result = "";
-  for (let char of input) {
-    if (charMap[char]) {
-      result += charMap[char];
-    } else {
-      result += "??????????";
-    }
+  const input = document.getElementById("inputText").value;
+  let encoded = '';
+
+  for (const char of input) {
+    const code = char.codePointAt(0);
+    const obf = [
+      charset[Math.floor(Math.random() * charset.length)],
+      code.toString(16).padStart(4, '0'),
+      charset[Math.floor(Math.random() * charset.length)]
+    ];
+    const wrap = `${obf[0]}${obf[1]}${obf[2]}`;
+    encoded += wrap;
   }
-  document.getElementById("output").value = result;
+
+  document.getElementById("outputText").value = encoded;
 }
 
+// Decodes the obfuscated format
 function decode() {
-  let input = document.getElementById("output").value;
-  if (input.length % chunkSize !== 0) {
-    alert("Invalid encoded string length!");
-    return;
+  const input = document.getElementById("outputText").value;
+  let decoded = '';
+
+  for (let i = 0; i < input.length; i += 6) {
+    const hex = input.slice(i + 1, i + 5);
+    const codePoint = parseInt(hex, 16);
+    decoded += String.fromCodePoint(codePoint);
   }
-  let result = "";
-  for (let i = 0; i < input.length; i += chunkSize) {
-    let chunk = input.slice(i, i + chunkSize);
-    result += reverseMap[chunk] || "?";
-  }
-  document.getElementById("input").value = result;
-}
 
-function copyOutput() {
-  navigator.clipboard.writeText(document.getElementById("output").value);
+  document.getElementById("inputText").value = decoded;
 }
-
-function copyPyOutput() {
-  navigator.clipboard.writeText(document.getElementById("pyOutput").value);
-}
-
-function switchTool(tool) {
-  document.getElementById("mainTool").classList.add("hidden");
-  document.getElementById("pyobfuscatorTool").classList.add("hidden");
-  document.getElementById(tool + "Tool").classList.remove("hidden");
-}
-
-function obfuscatePython() {
-  const script = document.getElementById("pyInput").value;
-  const base64Script = btoa(unescape(encodeURIComponent(script)));
-  const runner = `import base64\nexec(base64.b64decode("${base64Script}").decode())`;
-  document.getElementById("pyOutput").value = runner;
-}
-
-document.addEventListener("keydown", (e) => {
-  if (e.key.toLowerCase() === "m") {
-    const sidebar = document.getElementById("sidebar");
-    sidebar.style.transform = sidebar.style.transform === "translateX(-100%)" ? "translateX(0)" : "translateX(-100%)";
-  }
-});
