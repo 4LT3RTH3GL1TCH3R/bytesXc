@@ -15,7 +15,7 @@ function encode() {
 }
 
 function decode() {
-  const input = document.getElementById("outputText").value;
+  const input = document.getElementById("decodeInput").value;
   let decoded = '';
 
   for (let i = 0; i < input.length; i += 6) {
@@ -24,7 +24,7 @@ function decode() {
     decoded += String.fromCodePoint(codePoint);
   }
 
-  document.getElementById("inputText").value = decoded;
+  document.getElementById("decodeOutput").value = decoded;
 }
 
 function copyOutput() {
@@ -32,8 +32,19 @@ function copyOutput() {
   if (!output.value) return;
 
   navigator.clipboard.writeText(output.value).then(() => {
-    alert("Output copied to clipboard!");
+    alert("Encoded text copied!");
   }).catch(() => {
-    alert("Failed to copy.");
+    alert("Copy failed.");
+  });
+}
+
+function copyDecoded() {
+  const output = document.getElementById("decodeOutput");
+  if (!output.value) return;
+
+  navigator.clipboard.writeText(output.value).then(() => {
+    alert("Decoded text copied!");
+  }).catch(() => {
+    alert("Copy failed.");
   });
 }
