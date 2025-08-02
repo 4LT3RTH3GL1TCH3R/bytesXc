@@ -1,25 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>BytesXc Encoder</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div class="main-wrapper">
     <div class="box">
       <h1 class="logo">Bytes<span>Xc</span></h1>
 
-      <textarea id="inputText" placeholder="Enter text here..."></textarea>
+      <label>Text to Encode:</label>
+      <textarea id="inputText" placeholder="Enter text to encode..."></textarea>
+
+      <label>Encoded Output:</label>
+      <textarea id="outputText" readonly placeholder="Encoded result..."></textarea>
 
       <div class="buttons">
         <button onclick="encode()">Encode</button>
-        <button onclick="decode()">Decode</button>
-        <button onclick="copyOutput()">Copy Output</button>
+        <button onclick="copyOutput()">Copy Encoded</button>
       </div>
 
-      <textarea id="outputText" readonly placeholder="Output appears here..."></textarea>
+      <label>Text to Decode:</label>
+      <textarea id="decodeInput" placeholder="Enter BytesXc encoded text..."></textarea>
+
+      <label>Decoded Output:</label>
+      <textarea id="decodeOutput" readonly placeholder="Decoded result..."></textarea>
+
+      <div class="buttons">
+        <button onclick="decode()">Decode</button>
+        <button onclick="copyDecoded()">Copy Decoded</button>
+      </div>
     </div>
   </div>
 
