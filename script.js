@@ -1,25 +1,19 @@
 const charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*()-_=+[]{}<>!?~|';
 
-// Encodes each char with a 3-part randomized symbol wrap + unicode value
 function encode() {
   const input = document.getElementById("inputText").value;
   let encoded = '';
 
   for (const char of input) {
     const code = char.codePointAt(0);
-    const obf = [
-      charset[Math.floor(Math.random() * charset.length)],
-      code.toString(16).padStart(4, '0'),
-      charset[Math.floor(Math.random() * charset.length)]
-    ];
-    const wrap = `${obf[0]}${obf[1]}${obf[2]}`;
-    encoded += wrap;
+    const left = charset[Math.floor(Math.random() * charset.length)];
+    const right = charset[Math.floor(Math.random() * charset.length)];
+    encoded += `${left}${code.toString(16).padStart(4, '0')}${right}`;
   }
 
   document.getElementById("outputText").value = encoded;
 }
 
-// Decodes the obfuscated format
 function decode() {
   const input = document.getElementById("outputText").value;
   let decoded = '';
@@ -31,4 +25,15 @@ function decode() {
   }
 
   document.getElementById("inputText").value = decoded;
+}
+
+function copyOutput() {
+  const output = document.getElementById("outputText");
+  if (!output.value) return;
+
+  navigator.clipboard.writeText(output.value).then(() => {
+    alert("Output copied to clipboard!");
+  }).catch(() => {
+    alert("Failed to copy.");
+  });
 }
