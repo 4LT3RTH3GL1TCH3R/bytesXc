@@ -1,38 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>BytesXc Encoder</title>
-  <link rel="stylesheet" href="style.css"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>BytesXc Encoder/Decoder</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="sidebar" id="sidebar">
-    <button onclick="switchTool('main')">BytesXc Encoder</button>
-    <button onclick="switchTool('pyobfuscator')">Python Obfuscator</button>
-  </div>
-
-  <div class="container" id="mainTool">
-    <h1>BytesXc Encoder</h1>
-    <textarea id="input" placeholder="Enter text to encode..."></textarea>
+  <div class="container">
+    <h1>Bytes<span>Xc</span></h1>
+    <textarea id="inputText" placeholder="Enter text to encode or decode..."></textarea>
     <div class="buttons">
       <button onclick="encode()">Encode</button>
       <button onclick="decode()">Decode</button>
     </div>
-    <textarea id="output" placeholder="Result..."></textarea>
-    <button onclick="copyOutput()">Copy</button>
+    <textarea id="outputText" readonly placeholder="Output..."></textarea>
   </div>
-
-  <div class="container hidden" id="pyobfuscatorTool">
-    <h1>Python Obfuscator</h1>
-    <textarea id="pyInput" placeholder="Paste your Python script here..."></textarea>
-    <div class="buttons">
-      <button onclick="obfuscatePython()">Obfuscate</button>
-    </div>
-    <textarea id="pyOutput" placeholder="Runner script output..."></textarea>
-    <button onclick="copyPyOutput()">Copy</button>
-  </div>
-
   <script src="script.js"></script>
 </body>
 </html>
