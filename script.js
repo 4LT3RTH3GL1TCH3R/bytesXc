@@ -1,54 +1,95 @@
+function generateMapping() {
+  const chars = [];
+  for (let i = 32; i < 127; i++) chars.push(String.fromCharCode(i)); // printable ASCII
+  const shuffled = [...chars].sort(() => Math.random() - 0.5);
+  return { map: Object.fromEntries(chars.map((c, i) => [c, shuffled[i]])),
+           rev: Object.fromEntries(shuffled.map((c, i) => [c, chars[i]])) };
+}
+
+function customEncodeChar(c, mapping) {
+  // Step 1: char → binary
+  let bin = c.codePointAt(0).toString(2).padStart(16, "0");
+  // Step 2: reverse bits
+  bin = bin.split("").reverse().join("");
+  // Step 3: binary → hex
+  let hex = parseInt(bin, 2).toString(16).padStart(4, "0");
+  // Step 4: mapping substitution
+  hex = hex.split("").map(ch => mapping.map[ch] || ch).join("");
+  return hex;
+}
+
+function customDecodeChar(enc, mapping) {
+  // Step 1: reverse mapping substitution
+  enc = enc.split("").map(ch => mapping.rev[ch] || ch).join("");
+  // Step 2: hex → binary
+  let bin = parseInt(enc, 16).toString(2).padStart(16, "0");
+  // Step 3: reverse bits back
+  bin = bin.split("").reverse().join("");
+  // Step 4: binary → char
+  return String.fromCodePoint(parseInt(bin, 2));
+}
+
 function encode() {
   const input = document.getElementById("inputText").value;
-  let encoded = "";
+  if (!input) return;
 
-  for (const char of input) {
-    const hex = char.codePointAt(0).toString(16).padStart(4, "0");
-    encoded += `#x${hex}@`;
-  }
+  const mapping = generateMapping();
+  let encoded = input.split("").map(c => customEncodeChar(c, mapping)).join("-");
 
-  const base64 = btoa(encoded);
-  document.getElementById("outputText").value = base64;
+  // Layer 2: Base64
+  encoded = btoa(encoded);
+
+  // Layer 3: noise injection
+  const noiseChars = "!@#$%^&*()_+=[]{}|;:,.<>?";
+  encoded = encoded.split("").map(ch => ch + noiseChars[Math.floor(Math.random()*noiseChars.length)]).join("");
+
+  // Layer 4: reverse
+  encoded = encoded.split("").reverse().join("");
+
+  // Embed mapping in Base64 at start
+  const mappingB64 = btoa(JSON.stringify(mapping));
+  const finalEncoded = mappingB64 + "::" + encoded;
+
+  document.getElementById("outputText").value = finalEncoded;
 }
 
 function decode() {
   const input = document.getElementById("decodeInput").value;
-  let decoded = "";
+  if (!input || !input.includes("::")) {
+    document.getElementById("decodeOutput").value = "[Invalid input]";
+    return;
+  }
 
   try {
-    const raw = atob(input);
-    const regex = /#x([0-9a-fA-F]{4})@/g;
-    let match;
+    const [mappingB64, data] = input.split("::");
+    const mapping = JSON.parse(atob(mappingB64));
 
-    while ((match = regex.exec(raw)) !== null) {
-      const codePoint = parseInt(match[1], 16);
-      decoded += String.fromCodePoint(codePoint);
-    }
+    // Reverse step 4
+    let decoded = data.split("").reverse().join("");
+
+    // Remove noise (every 2nd char)
+    decoded = decoded.split("").filter((_, i) => i % 2 === 0).join("");
+
+    // Base64 decode
+    decoded = atob(decoded);
+
+    // Decode each chunk
+    decoded = decoded.split("-").map(chunk => customDecodeChar(chunk, mapping)).join("");
 
     document.getElementById("decodeOutput").value = decoded || "[Could not decode]";
-  } catch (err) {
-    document.getElementById("decodeOutput").value = "[Invalid input]";
+  } catch {
+    document.getElementById("decodeOutput").value = "[Invalid input or mapping]";
   }
 }
 
 function copyOutput() {
   const output = document.getElementById("outputText");
   if (!output.value) return;
-
-  navigator.clipboard.writeText(output.value).then(() => {
-    alert("Encoded text copied!");
-  }).catch(() => {
-    alert("Copy failed.");
-  });
+  navigator.clipboard.writeText(output.value).then(() => alert("Encoded text copied!"));
 }
 
 function copyDecoded() {
   const output = document.getElementById("decodeOutput");
   if (!output.value) return;
-
-  navigator.clipboard.writeText(output.value).then(() => {
-    alert("Decoded text copied!");
-  }).catch(() => {
-    alert("Copy failed.");
-  });
+  navigator.clipboard.writeText(output.value).then(() => alert("Decoded text copied!"));
 }
